@@ -19,5 +19,8 @@ from django.urls import include, path
 from django.conf.urls import include
 urlpatterns = [
     path('polls/', include('polls.urls')),
-    path('admin/', admin.site.urls),
+    #path('polls', include('polls.urls')),
+    #path(r'^', include('polls.urls')),
+    #path('admin/', admin.site.urls),
+    #http://127.0.0.1:8000/polls/templates/index.html
 ]

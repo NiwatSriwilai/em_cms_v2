@@ -23,4 +23,5 @@ urlpatterns = [
     #path(r'^', include('polls.urls')),
     #path('admin/', admin.site.urls),
     #http://127.0.0.1:8000/polls/templates/index.html
+    #https://access.line.me/oauth2/v2.1/authorize?response_type=code&client_id=1594794852&redirect_uri=http://35.197.130.54/callback.html
 ]

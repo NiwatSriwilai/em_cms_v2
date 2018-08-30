@@ -34,7 +34,7 @@ def requestCurl():
 
     response = requests.post('https://api.line.me/oauth2/v2.1/token', headers=headers, data=data)
     print ('response = '+response.text)
-#requestCurl()    
+requestCurl()    
 #def about(request):
 #    return render(request, 'about.html', context=None)
 def callback(request):
@@ -53,4 +53,5 @@ def callback(request):
 #    template_name = "about.html"
 #https://www.quora.com/How-do-I-add-my-Django-projects-on-GitHub#
 #https://scotch.io/tutorials/working-with-django-templates-static-files
+#/.virtualenvs/niwat.pythonanywhere.com
 

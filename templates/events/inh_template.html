@@ -1,0 +1,29 @@
+{% extends 'events/base.html' %}
+
+{% load staticfiles %}
+
+{% block title %}{{ category_n }}{% endblock %}
+
+{% block body_block %}
+    <h1>{{ category_n }}</h1>
+    {% if category %}
+        <li><a >Has cat</a></li>
+        {% if pages %}
+        <ul>
+                {% for page in pages %}
+                <li><a href="{{ page.url }}">{{ page.title }}</a></li>
+                {% endfor %}
+                </ul>
+        {% else %}
+                <strong>No pages currently in category.</strong>
+                {% endif %}
+
+        {% if user.is_authenticated %}
+                <a href="/rango/category/{{category.slug}}/add_page/">Add a Page</a>
+                {% endif %}
+        {% else %}
+                 The specified category {{ category_name }} does not exist!
+                 <li><a >No Has cat</a></li>
+    {% endif %}
+
+{% endblock %}

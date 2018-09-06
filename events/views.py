@@ -52,7 +52,8 @@ def callback(request):
     #http://niwat.pythonanywhere.com/polls/callback/?code=PzM1z4J3qpW9zWaNMx5e&state=12345abcde
     #wb.open('https://access.line.me/oauth2/v2.1/authorize?response_type=code&client_id=1594794852&redirect_uri=http://niwat.pythonanywhere.com/polls/callback/&state=12345abcde&scope=profile')
     return render(request, 'about.html', context=None)
-        
+def register(request):
+    return HttpResponseRedirect('https://goo.gl/forms/RHx0pQjEXAMz5Z9s1')        
 #class HomePageView(TemplateView):
 #    def get(self, request, **kwargs):
 #        return render(request, 'about.html', context=None)

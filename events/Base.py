@@ -1,0 +1,2 @@
+class MyBase:
+    pass

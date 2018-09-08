@@ -31,6 +31,8 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    #'events',
+    'events.apps.EventsConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -38,7 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'widget_tweaks',
-    'events',
+
     #'polls'
 ]
 
@@ -81,6 +83,12 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        #'ENGINE': 'django.db.backends.mysql',
+        #'ENGINE': 'mysql.connector.django',
+        #'NAME': 'django_db',
+        #'USER': 'root',
+        #'PASSWORD': 'sriw0309',
+        #'port': 3306,
     }
 }
 

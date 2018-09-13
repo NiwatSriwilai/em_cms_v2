@@ -46,10 +46,7 @@ def bootstrap(request):
     b1 = {'name':'Niwat',
           'description':'Sriwilai'
           }
-    b2 = {'name': 'Prasert',
-          'description': 'Sriwilai'
-          }
-    bs =[b1,b2]
+    bs =[b1]
 
     boards = {
         'boards':bs,
@@ -57,7 +54,19 @@ def bootstrap(request):
         'password':'Sreewilai_8'
     }
     return render(request, 'events/bootstrap.html', context=boards)
+def chat_client(request):
+    context = {
+        'someDjangoVariable':'Hello'
+    }
+    return render(request, 'events/chat-client.html', context=context)
 
+def chat_tv(request):
+    context = {
+        'someDjangoVariable': 'Hello'
+    }
+    return render(request, 'events/chat-tv.html', context=context)
+    #return HttpResponseRedirect('http://localhost/chat/chat-client.html')
+#http://localhost/chat/chat-client.html
 def inh_template(request):
     cat = [1, 2, 3]
     pages = []
@@ -127,8 +136,11 @@ def register(request):
 #/.virtualenvs/niwat.pythonanywhere.com
 
 #start server
-#
+#python manage.py runserver
 
 #install new module to pythonanywhere solution
 #https://stackoverflow.com/questions/29716462/pythonanywhere-django-import-error-for-requests-despite-it-being-listed
+
+#webrtc
+#https://medium.com/@martin.sikora/node-js-websocket-simple-chat-tutorial-2def3a841b61
 

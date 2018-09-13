@@ -41,6 +41,7 @@ def home(request):
     return render(request, 'home.html', context=None)
 def base(request):
     return render(request, 'events/base.html', context=None)
+
 class Base:
     pass
 

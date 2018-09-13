@@ -25,7 +25,7 @@ SECRET_KEY = '$cw_f&19r(23ia89fv-w((59&@dwqc^a)i&r7-o%m(s!$nvwk#'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['niwat.pythonanywhere.com']
 
 
 # Application definition
@@ -81,14 +81,14 @@ WSGI_APPLICATION = 'mysite.wsgi.application'
 
 DATABASES = {
     'default': {
-        #'ENGINE': 'django.db.backends.sqlite3',
-        #'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-        'ENGINE': 'django.db.backends.mysql',
-        #'ENGINE': 'mysql.connector.django',
-        'NAME': 'django_db',
-        'USER': 'root',
-        'PASSWORD': 'sriw0309',
-        #'port': 3306,
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        #'ENGINE': 'django.db.backends.mysql',
+
+        #'NAME': 'django_db',
+        #'USER': 'root',
+        #'PASSWORD': 'sriw0309',
+
     }
 }
 

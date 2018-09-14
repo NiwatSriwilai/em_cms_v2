@@ -25,8 +25,8 @@ SECRET_KEY = '$cw_f&19r(23ia89fv-w((59&@dwqc^a)i&r7-o%m(s!$nvwk#'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['niwat.pythonanywhere.com']
-
+#ALLOWED_HOSTS = ['niwat.pythonanywhere.com']
+ALLOWED_HOSTS = []
 
 # Application definition
 

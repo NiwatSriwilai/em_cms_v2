@@ -42,7 +42,9 @@
     #canvas {
       display:none;
     }
-  
+  #reaultcanvas {
+      display: inline-block;
+    }
   .camera {
     width: 340px;
     display:none;
@@ -82,10 +84,15 @@
   </head>
   <body>
   <div class="contentarea">
+      <div>
+        <video id="vid">Video stream not available.</video>
+      </div>
       <div class="camera">
         <video id="video">Video stream not available.</video>
       </div>
       <canvas id="canvas">
+      </canvas>
+      <canvas id="resultcanvas">
       </canvas>
       <div class="output">
         <img id="photo" alt="The screen capture will appear in this box."> 
@@ -145,6 +152,7 @@
       var send = $('#button');
       var save = $('#save');
       var imageData = null;
+      var imageByteData = null
       // my color assigned by the server
       var myColor = false;
       // my name sent to the server
@@ -155,9 +163,31 @@
       // if browser doesn't support WebSocket, just show
       // some notification and exit
        $( "#take_picture" ).click(function() {
-         startup();
+         //startup();
+         setupVideo();
       });
       ;
+      function setupVideo(){
+
+        var video = document.getElementById('vid');
+        video.style.width = document.width + 'px';
+        video.style.height = document.height + 'px';
+        video.setAttribute('autoplay', '');
+        video.setAttribute('muted', '');
+        video.setAttribute('playsinline',true);
+        var facingMode = "user";
+        var constraints = {
+          audio: false,
+          video: {
+           facingMode: facingMode
+          }
+        }
+        navigator.mediaDevices.getUserMedia(constraints).then(function success(stream) {
+          video.srcObject = stream;
+          //video.play
+        });
+        //document.body.appendChild(video);
+      }
       function startup() {
         var camera = document.getElementsByClassName('camera');
         $('.camera').css('display','block');
@@ -225,6 +255,7 @@
             context.drawImage(video, 0, 0, width, height);
 
             var data =imageData= canvas.toDataURL('image/png');
+            imageByteData = context.getImageData(0, 0, canvas.width, canvas.height).data;
             //imageData = context.getImageData(0, 0, canvas.width, canvas.height).data;             
             photo.setAttribute('src', data);
             
@@ -235,42 +266,39 @@
           video.style.display='none'
        }
       }
-      function handleReceive(json) {
+      function handleReceive(message) {
+        
+        //var data = JSON.parse(message.data)
+        console.log("binary len = "+JSON.stringify(message.blob));
         //var bytes = new Uint8Array(message.data);
         //console.log(JSON.stringify(message.data));
         var c  = document.getElementById('resultcanvas');
         c.width = width;
         c.height = height;
         var ctx = c.getContext('2d');
-        if(true){
-          var image = new Image();
-          image.src = json.data.text;
-          image.onload = function () { 
-            ctx.drawImage(image,0,0); 
-          };
-          return;
-        }
+       
+        
         var imageData = ctx.createImageData(c.width, c.height);
         var pixels = imageData.data;
         var buffer = new Uint8Array(message.data);
         for (var i=0; i < pixels.length; i++) {
           pixels[i] = buffer[i];
         }
-        
-        /*var j = new Image();
-        j.src = 'data:image/jpeg;base64,' + message.data;
-        j.src = "{% static 'images/Logo.jpg' %}";
-        j.onload = function () { 
-          ctx.drawImage(j,0,0); 
-        };*/
-
-        console.log("buffer = "+buffer.length);
         ctx.putImageData(imageData,0,0);
       }
       $( "#button" ).click(function() {
-           var msg = $("#input").val();
-          if (!msg) {
-            return;
+          if(imageByteData){
+            
+            canvas = document.getElementById('canvas');
+            photo = document.getElementById('photo');
+            canvas.style.display = 'none';
+            photo.style.display = 'none';
+            
+            var byteArray = new Uint8Array(imageByteData);
+            connection.send(byteArray.buffer);       
+            imageByteData = null;
+            imageData = null;
+            return
           }
           if(imageData){
             canvas = document.getElementById('canvas');
@@ -293,8 +321,12 @@
             var msgJson = {msg:imageData,content:"image"};
             connection.send(JSON.stringify(msgJson));
             imageData = null;
-          }else{
-          // send the message as an ordinary text
+
+          }else{             
+            var msg = $("#input").val();
+              if (!msg) {
+                return;
+              }
             var msgJson = {msg:msg,content:"text"};
             connection.send(JSON.stringify(msgJson));
             console.log("msg = "+msgJson);
@@ -318,6 +350,7 @@
       }
       // open connection
       var connection = new WebSocket('ws://127.0.0.1:1337');
+      connection.binaryType = 'arraybuffer';
       connection.onopen = function () {
         // first we want users to enter their names
         input.removeAttr('disabled');

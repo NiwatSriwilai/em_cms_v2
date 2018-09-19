@@ -14,7 +14,7 @@
         margin-top:10px; padding:5px; width:290px;
     }
     #status { width:88px;display:block;float:left;margin-top:15px; }
-    #button {
+    .button {
       background-color: #4CAF50; /* Green */
       border: none;
       color: white;
@@ -27,16 +27,14 @@
     #video {
       border: 1px solid black;
       box-shadow: 2px 2px 3px black;
-      width:320px;
-      height:240px;
+      
     }
 
     #photo {
      
       border: 1px solid black;
       box-shadow: 2px 2px 3px black;
-      width:320px;
-      height:240px;
+     
     }
 
     #canvas {
@@ -52,9 +50,15 @@
 
   .output {
     display:block;
-    width: 340px;
+    width: 320px;
     
   }
+  
+   #vid {
+    margin-left: auto;
+    margin-right: auto;
+    display: block
+   }
     #take_picture {
       background-color: #4CAF50; /* Green */
       border: none;
@@ -81,390 +85,425 @@
       width: 760px;
     }
   </style>
+   <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
   </head>
   <body>
-  <div class="contentarea">
-      <div>
-        <video id="vid">Video stream not available.</video>
-      </div>
-      <div class="camera">
-        <video id="video">Video stream not available.</video>
-      </div>
-      <canvas id="canvas">
-      </canvas>
-      <canvas id="resultcanvas">
-      </canvas>
-      <div class="output">
-        <img id="photo" alt="The screen capture will appear in this box."> 
-      </div>
-    </div>
-    <div id="content"></div>
-    <div>
-      <span id="status">Connecting...</span>
-      <input type="text" id="input" disabled="disabled" />
-    </div>
-  </br>
-    <div>
-      <button id="button" >Send</button>
-      <button id="take_picture" >Take Picture</button>
-      <button id="save" >Save</button>
-    </div>
-    <!--script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"-->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js">
-    </script>
-    <!--script src="./chat-client.js"></script-->
-  <script type="text/javascript">
+      <div class="container">  
+          <div class="contentarea">
+              <video id="vid"></video>
+              <canvas id="canvas">
+              </canvas>
+              <canvas id="resultcanvas">
+              </canvas>
+              <div class="output">
+                <img id="photo" alt="The screen capture will appear in this box."> 
+              </div>
+            </div>
+            <div id="content"></div>
+            <div>
+              <span id="status">Connecting...</span>
+              <input type="text" id="input" disabled="disabled" />
+            </div>
+          </br>
+            <div>
+              <button id="butto" class = "button">Send</button>
+              <button id="take_picture" >Take Picture</button>
+              <button id="save" >Save</button>
+            </div>
+            <!--script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"-->
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js">
+            </script>
+            <!--script src="./chat-client.js"></script-->
+          <script type="text/javascript">
 
-     $(function () {
-
-      /*var c = document.getElementById('resultcanvas');
-      var ctx = c.getContext('2d');
-      ctx.globalalpha = 0.3;
-      for(var i=0; i<1000; i++) {
-        ctx.beginPath();
-        var r = Math.floor(Math.random() * 256);
-        var g = Math.floor(Math.random() * 256);
-        var b = Math.floor(Math.random() * 256);
-        ctx.strokeStyle = 'rgb(' + r + ',' + g + ',' + b + ')';
-        ctx.moveTo(Math.random()*200, Math.random()*200);
-        ctx.lineTo(Math.random()*200, Math.random()*200);
-        ctx.stroke();
-      }*/
+             $(function () {
+                
+              /*var c = document.getElementById('resultcanvas');
+              var ctx = c.getContext('2d');
+              ctx.globalalpha = 0.3;
+              for(var i=0; i<1000; i++) {
+                ctx.beginPath();
+                var r = Math.floor(Math.random() * 256);
+                var g = Math.floor(Math.random() * 256);
+                var b = Math.floor(Math.random() * 256);
+                ctx.strokeStyle = 'rgb(' + r + ',' + g + ',' + b + ')';
+                ctx.moveTo(Math.random()*200, Math.random()*200);
+                ctx.lineTo(Math.random()*200, Math.random()*200);
+                ctx.stroke();
+              }*/
 
 
-      var width = 320;    // We will scale the photo width to this
-      var height = 0;     // This will be computed based on the input stream
-      var streaming = false;
 
-      var video = null;
-      var canvas = null;
-      var photo = null;
-      var startbutton = null;
+              //var json = JSON.parse("{{ someDjangoVariable|escapejs }}");
+              var json = "{{ someDjangoVariable|escapejs }}"
+              console.log("json = "+json);
+              "use strict";
+              // for better performance - to avoid searching in DOM
+              var content = $('#content');
+              var input = $('#input');
+              var status = $('#status');
+              var send = $('#button');
+              var save = $('#save');
+              var imageData = null;
+              var imageByteData = null
+              // my color assigned by the server
+              var myColor = false;
+              // my name sent to the server
+              var myName = false;
 
-      //var json = JSON.parse("{{ someDjangoVariable|escapejs }}");
-      var json = "{{ someDjangoVariable|escapejs }}"
-      console.log("json = "+json);
-      "use strict";
-      // for better performance - to avoid searching in DOM
-      var content = $('#content');
-      var input = $('#input');
-      var status = $('#status');
-      var send = $('#button');
-      var save = $('#save');
-      var imageData = null;
-      var imageByteData = null
-      // my color assigned by the server
-      var myColor = false;
-      // my name sent to the server
-      var myName = false;
+              var canvas = null;
+              var photo = null;
+              var startbutton = null;
+              var video = null;
+              var vWidth = 5,vHeight = 5;
+              //var vWidth = 1280,vHeight = 720;
+                
+              // if user is running mozilla then use it's built-in WebSocket
+              window.WebSocket = window.WebSocket || window.MozWebSocket;
+              // if browser doesn't support WebSocket, just show
+              // some notification and exit
+               $( "#take_picture" ).click(function() {
+                 //startup();
+                 setupVideo();
+              });
+              $( "#save" ).click(function() {       
+                    console.log("-----call again");    
+                    savepicture();
+                })
+              function setupVideo(){
+                console.log("-----call setupVideo");  
+                canvas = document.getElementById('canvas');
+                photo = document.getElementById('photo');
+                startbutton = document.getElementById('take_picture');
+                video = document.getElementById('vid'); 
+                video.style.display = 'block'
+                video.setAttribute('width', vWidth+'px');
+                video.setAttribute('height', vHeight+'px');
+                video.setAttribute('autoplay', '');
+                video.setAttribute('muted', '');
+                vWidth = video.width;
+               
+                video.setAttribute('playsinline',true);
+                var facingMode = "user";
+                var constraints = {
+                  audio: false,
+                  video: {
+                   facingMode: facingMode,
+                   //width: 1280,
+                   //height: 720 
+                  }
+                }
+                navigator.mediaDevices.getUserMedia(constraints).then(function success(stream) {
+                  video.srcObject = stream;
+                  //video.play
+                });
 
-      // if user is running mozilla then use it's built-in WebSocket
-      window.WebSocket = window.WebSocket || window.MozWebSocket;
-      // if browser doesn't support WebSocket, just show
-      // some notification and exit
-       $( "#take_picture" ).click(function() {
-         //startup();
-         setupVideo();
-      });
-      ;
-      function setupVideo(){
 
-        var video = document.getElementById('vid');
-        video.style.width = document.width + 'px';
-        video.style.height = document.height + 'px';
-        video.setAttribute('autoplay', '');
-        video.setAttribute('muted', '');
-        video.setAttribute('playsinline',true);
-        var facingMode = "user";
-        var constraints = {
-          audio: false,
-          video: {
-           facingMode: facingMode
-          }
-        }
-        navigator.mediaDevices.getUserMedia(constraints).then(function success(stream) {
-          video.srcObject = stream;
-          //video.play
-        });
-        //document.body.appendChild(video);
-      }
-      function startup() {
-        var camera = document.getElementsByClassName('camera');
-        $('.camera').css('display','block');
-        video = document.getElementById('video');
-        video.style.display = 'block';
-        canvas = document.getElementById('canvas');
-        photo = document.getElementById('photo');
-        startbutton = document.getElementById('take_picture');
-        
-        
-        navigator.getMedia = ( navigator.getUserMedia ||
-                           navigator.webkitGetUserMedia ||
-                           navigator.mozGetUserMedia ||
-                           navigator.msGetUserMedia);
+                //document.body.appendChild(video);
+              }
+              function savepicture() {
+                  var context = canvas.getContext('2d');
+                  canvas.width = video.width;
+                  canvas.height = video.height;
+                  context.drawImage(video, 0, 0, video.width, video.height);
 
-        navigator.getMedia(
-          {
-            video: true,
-            audio: false
-          },
-          function(stream) {
-            if (navigator.mozGetUserMedia) {
-              video.mozSrcObject = stream;
-            } else {
-              //var vendorURL = window.URL || window.webkitURL;
-               //video.src = vendorURL.createObjectURL(stream);
-               video.srcObject = stream
-            }
-            video.play();
-          },
-          function(err) {
-            console.log("An error occured! " + err);
-          }
-        );
-        $( "#save" ).click(function() {       
-            console.log("-----call again");    
-            savepicture();
-        })
-         video.addEventListener('canplay', function(ev){
+                  var data =imageData= canvas.toDataURL('image/png');
+                  imageByteData = context.getImageData(0, 0, canvas.width, canvas.height).data;
 
-          if (!streaming) {
-            height = video.videoHeight / (video.videoWidth/width);
+                    //imageData = context.getImageData(0, 0, canvas.width, canvas.height).data;             
+                  photo.setAttribute('src', data);       
+                  photo.style.display='block'    
+                  video.pause();
+                  video.style.display='none'
+               }
+              function startup() {
+                var camera = document.getElementsByClassName('camera');
+                $('.camera').css('display','block');
+                video = document.getElementById('video');
+                video.style.display = 'block';
+                canvas = document.getElementById('canvas');
+                photo = document.getElementById('photo');
+                startbutton = document.getElementById('take_picture');
 
-            // Firefox currently has a bug where the height can't be read from
-            // the video, so we will make assumptions if this happens.
 
-            if (isNaN(height)) {
-              height = width / (4/3);
-            }
+                navigator.getMedia = ( navigator.getUserMedia ||
+                                   navigator.webkitGetUserMedia ||
+                                   navigator.mozGetUserMedia ||
+                                   navigator.msGetUserMedia);
 
-            video.setAttribute('width', width);
-            video.setAttribute('height', height);
-            canvas.setAttribute('width', width);
-            canvas.setAttribute('height', height);
-            streaming = true;
-           
-          }
-        }, false);
-        function savepicture() {
+                navigator.getMedia(
+                  {
+                    video: true,
+                    audio: false
+                  },
+                  function(stream) {
+                    if (navigator.mozGetUserMedia) {
+                      video.mozSrcObject = stream;
+                    } else {
+                      //var vendorURL = window.URL || window.webkitURL;
+                       //video.src = vendorURL.createObjectURL(stream);
+                       video.srcObject = stream
+                    }
+                    video.play();
+                  },
+                  function(err) {
+                    console.log("An error occured! " + err);
+                  }
+                );
+                $( "#save" ).click(function() {       
+                    console.log("-----call again");    
+                    savepicture();
+                })
+                 video.addEventListener('canplay', function(ev){
 
-          var context = canvas.getContext('2d');
-          if (width && height) {
-            canvas.width = width;
-            canvas.height = height;
-            context.drawImage(video, 0, 0, width, height);
+                  if (!streaming) {
+                    height = video.videoHeight / (video.videoWidth/width);
 
-            var data =imageData= canvas.toDataURL('image/png');
-            imageByteData = context.getImageData(0, 0, canvas.width, canvas.height).data;
-            //imageData = context.getImageData(0, 0, canvas.width, canvas.height).data;             
-            photo.setAttribute('src', data);
-            
-          } else {
+                    // Firefox currently has a bug where the height can't be read from
+                    // the video, so we will make assumptions if this happens.
 
-          }
-          video.pause();
-          video.style.display='none'
-       }
-      }
-      function handleReceive(message) {
-        
-        //var data = JSON.parse(message.data)
-        console.log("binary len = "+JSON.stringify(message.blob));
-        //var bytes = new Uint8Array(message.data);
-        //console.log(JSON.stringify(message.data));
-        var c  = document.getElementById('resultcanvas');
-        c.width = width;
-        c.height = height;
-        var ctx = c.getContext('2d');
-       
-        
-        var imageData = ctx.createImageData(c.width, c.height);
-        var pixels = imageData.data;
-        var buffer = new Uint8Array(message.data);
-        for (var i=0; i < pixels.length; i++) {
-          pixels[i] = buffer[i];
-        }
-        ctx.putImageData(imageData,0,0);
-      }
-      $( "#button" ).click(function() {
-          if(imageByteData){
-            
-            canvas = document.getElementById('canvas');
-            photo = document.getElementById('photo');
-            canvas.style.display = 'none';
-            photo.style.display = 'none';
-            
-            var byteArray = new Uint8Array(imageByteData);
-            connection.send(byteArray.buffer);       
-            imageByteData = null;
-            imageData = null;
-            return
-          }
-          if(imageData){
-            canvas = document.getElementById('canvas');
-            photo = document.getElementById('photo');
-            canvas.style.display = 'none';
-            photo.style.display = 'none';
-            //console.log(imageData.length );
-            /*if(true){
-              var buf = '';
-              for(var i = 1; i <= 2000000; ++i) buf = buf + 'a';
-              var msgJson = {msg:buf,content:"image"};
-              connection.send(JSON.stringify(msgJson));
-              var byteArray = new Uint8Array(imageData);
-              
-              return;
-            }*/
-            //connection.send(byteArray.buffer);
-            //console.log(imageData);
-            //connection.send(buf);
-            var msgJson = {msg:imageData,content:"image"};
-            connection.send(JSON.stringify(msgJson));
-            imageData = null;
+                    if (isNaN(height)) {
+                      height = width / (4/3);
+                    }
 
-          }else{             
-            var msg = $("#input").val();
-              if (!msg) {
+                    video.setAttribute('width', width);
+                    video.setAttribute('height', height);
+                    canvas.setAttribute('width', width);
+                    canvas.setAttribute('height', height);
+                    streaming = true;
+
+                  }
+                }, false);
+                function savepicture() {
+                  canvas.style.display = 'block';
+                  photo.style.display = 'block';   
+                  var context = canvas.getContext('2d');
+                  if (width && height) {
+                    canvas.width = width;
+                    canvas.height = height;
+                    context.drawImage(video, 0, 0, width, height);
+
+                    var data =imageData= canvas.toDataURL('image/png');
+                    imageByteData = context.getImageData(0, 0, canvas.width, canvas.height).data;
+                    //imageData = context.getImageData(0, 0, canvas.width, canvas.height).data;             
+                    photo.setAttribute('src', data);
+
+                  } else {
+
+                  }
+                  video.pause();
+                  video.style.display='none'
+               }
+              }
+              function handleReceive(message) {
+                console.log("binaryType");
+                //var data = JSON.parse(message.data)
+               
+                //var bytes = new Uint8Array(message.data);
+                //console.log(JSON.stringify(message.data));
+                //var c  = document.getElementById('resultcanvas');
+                //var c  = new Canvas();
+                var c  =  document.createElement('canvas');
+                c.width = vWidth;
+                c.height = vHeight;
+                var ctx = c.getContext('2d');
+
+
+                var imageData = ctx.createImageData(c.width, c.height);
+                var pixels = imageData.data;
+                var buffer = new Uint8Array(message.data);
+                for (var i=0; i < pixels.length; i++) {
+                  pixels[i] = buffer[i];
+                }
+                ctx.putImageData(imageData,0,0);
+                content.prepend(c);
+              }
+              $( "#butto" ).click(function() {
+                  if(imageByteData){
+                    canvas = document.getElementById('canvas');
+                    photo = document.getElementById('photo');
+                    //canvas.style.display = 'none';
+                    photo.style.display = 'none';
+                    
+                    var byteArray = new Uint8Array(imageByteData);
+                    console.log("image size = "+byteArray.length);
+                    connection.send(byteArray.buffer);       
+                    imageByteData = null;
+                    imageData = null;
+                    return
+                  }
+                  if(imageData){
+                    canvas = document.getElementById('canvas');
+                    photo = document.getElementById('photo');
+                    //canvas.style.display = 'none';
+                    photo.style.display = 'none';
+                    //console.log(imageData.length );
+                    /*if(true){
+                      var buf = '';
+                      for(var i = 1; i <= 2000000; ++i) buf = buf + 'a';
+                      var msgJson = {msg:buf,content:"image"};
+                      connection.send(JSON.stringify(msgJson));
+                      var byteArray = new Uint8Array(imageData);
+
+                      return;
+                    }*/
+                    //connection.send(byteArray.buffer);
+                    //console.log(imageData);
+                    //connection.send(buf);
+                    var msgJson = {msg:imageData,content:"image"};
+                    connection.send(JSON.stringify(msgJson));
+                    imageData = null;
+
+                  }else{             
+                    var msg = $("#input").val();
+                      if (!msg) {
+                        return;
+                      }
+                    var msgJson = {msg:msg,content:"text"};
+                    connection.send(JSON.stringify(msgJson));
+                    console.log("msg = "+msgJson);
+                  }
+                  $("#input").val('');
+                  // disable the input field to make the user wait until server
+                  // sends back response
+                  input.attr('disabled', 'disabled');
+                  // we know that the first message sent from a user their name
+                  if (myName === false) {
+                    myName = msg;
+                  }
+            });
+              if (!window.WebSocket) {
+                content.html($('<p>',
+                  { text:'Sorry, but your browser doesn\'t support WebSocket.'}
+                ));
+                input.hide();
+                $('span').hide();
                 return;
               }
-            var msgJson = {msg:msg,content:"text"};
-            connection.send(JSON.stringify(msgJson));
-            console.log("msg = "+msgJson);
-          }
-          $("#input").val('');
-          // disable the input field to make the user wait until server
-          // sends back response
-          input.attr('disabled', 'disabled');
-          // we know that the first message sent from a user their name
-          if (myName === false) {
-            myName = msg;
-          }
-    });
-      if (!window.WebSocket) {
-        content.html($('<p>',
-          { text:'Sorry, but your browser doesn\'t support WebSocket.'}
-        ));
-        input.hide();
-        $('span').hide();
-        return;
-      }
-      // open connection
-      var connection = new WebSocket('ws://127.0.0.1:1337');
-      connection.binaryType = 'arraybuffer';
-      connection.onopen = function () {
-        // first we want users to enter their names
-        input.removeAttr('disabled');
-        status.text('Choose name:');
-      };
-      connection.onerror = function (error) {
-        // just in there were some problems with connection...
-        content.html($('<p>', {
-          text: 'Sorry, but there\'s some problem with your '
-             + 'connection or the server is down.'
-        }));
-      };
-      // most important part - incoming messages
-      connection.onmessage = function (message) {
-        // try to parse JSON message. Because we know that the server
-        // always returns JSON this should work without any problem but
-        // we should make sure that the massage is not chunked or
-        // otherwise damaged.
-        
-        try {
-          var json = JSON.parse(message.data);
-          console.log("json = "+JSON.stringify(json));
-        } catch (e) {
-          handleReceive(message);
-          return;
-        }
+              // open connection
+              var connection = new WebSocket('ws://127.0.0.1:1337');
+              connection.binaryType = 'arraybuffer';
+              connection.onopen = function () {
+                // first we want users to enter their names
+                input.removeAttr('disabled');
+                status.text('Choose name:');
+              };
+              connection.onerror = function (error) {
+                // just in there were some problems with connection...
+                content.html($('<p>', {
+                  text: 'Sorry, but there\'s some problem with your '
+                     + 'connection or the server is down.'
+                }));
+              };
+              // most important part - incoming messages
+              connection.onmessage = function (message) {
+                // try to parse JSON message. Because we know that the server
+                // always returns JSON this should work without any problem but
+                // we should make sure that the massage is not chunked or
+                // otherwise damaged.
 
-        // NOTE: if you're not sure about the JSON structure
-        // check the server source code above
-        // first response from the server with user's color
-        if (json.type === 'color') {
-          console.log("color");
-          myColor = json.data;
-          status.text(myName + ': ').css('color', myColor);
-          input.removeAttr('disabled').focus();
-          // from now user can start sending messages
-        } else if (json.type === 'history') { // entire message history
-          // insert every single message to the chat window
-          console.log("history");
-          for (var i=0; i < json.data.length; i++) {
-          addMessage(json.data[i].author, json.data[i].text,
-              json.data[i].color, new Date(json.data[i].time),json.data[i].content);
-          }
-        } else if (json.type === 'message') { // it's a single message
-          // let the user write another message
+                try {
+                  var json = JSON.parse(message.data);
+                  //console.log("json = "+JSON.stringify(json));
+                } catch (e) {
+            
+                  handleReceive(message);
+                  return;
+                }
 
-          input.removeAttr('disabled');
-          addMessage(json.data.author, json.data.text,
-                     json.data.color, new Date(json.data.time),json.data.content);
-        } else {
-          console.log('Hmm..., I\'ve never seen JSON like this:', json);
-        }
-      };
-      /**
-       * Send message when user presses Enter key
-       */
-      input.keydown(function(e) {
-        if (e.keyCode === 13) {
-          var msg = $(this).val();
-          if (!msg) {
-            return;
-          }
-          // send the message as an ordinary text
-          connection.send(msg);
-          console.log("msg = "+msg);
-          $(this).val('');
-          // disable the input field to make the user wait until server
-          // sends back response
-          input.attr('disabled', 'disabled');
-          // we know that the first message sent from a user their name
-          if (myName === false) {
-            myName = msg;
-          }
-        }
-      });
-      /**
-       * This method is optional. If the server wasn't able to
-       * respond to the in 3 seconds then show some error message
-       * to notify the user that something is wrong.
-       */
-      setInterval(function() {
-        if (connection.readyState !== 1) {
-          console.log("connection.readyState = "+connection.readyState);
-          status.text('Error');
-          input.attr('disabled', 'disabled').val(
-              'Unable to communicate with the WebSocket server.');
-        }
-      }, 30000);
-      /**
-       * Add message to the chat window
-       */
-      function addMessage(author, message, color, dt,type) {
-        if(type==="text"){
-          content.prepend('<p><span style="color:' + color + '">'
-            + author + '</span> @ ' + (dt.getHours() < 10 ? '0'
-            + dt.getHours() : dt.getHours()) + ':'
-            + (dt.getMinutes() < 10
-              ? '0' + dt.getMinutes() : dt.getMinutes())
-            + ': ' + message + '</p>');
-        }else if(type==="image"){
-          var image = new Image();
-          image.src = message;
-          content.prepend(image)
+                // NOTE: if you're not sure about the JSON structure
+                // check the server source code above
+                // first response from the server with user's color
+                if (json.type === 'color') {
+                  console.log("color");
+                  myColor = json.data;
+                  status.text(myName + ': ').css('color', myColor);
+                  input.removeAttr('disabled').focus();
+                  // from now user can start sending messages
+                } else if (json.type === 'history') { // entire message history
+                  // insert every single message to the chat window
+                  console.log("history = "+JSON.stringify(json));
 
-          content.prepend('<p><span style="color:' + color + '">'
-                + author + '</span> @ ' + (dt.getHours() < 10 ? '0'
-                + dt.getHours() : dt.getHours()) + ':'
-                + (dt.getMinutes() < 10
-                  ? '0' + dt.getMinutes() : dt.getMinutes())
-                + ':</p>');
-        }
-      }
-    
-    });
-  </script>
+                  for (var i=0; i < json.data.length; i++) {
+                      if(json.data[i].type==='Buffer'){
+                        handleReceive(json.data[i]);
+                      }else{
+                        addMessage(json.data[i].author, json.data[i].text,
+                          json.data[i].color, new Date(json.data[i].time),json.data[i].content);
+                      }
+                  }
+                } else if (json.type === 'message') { // it's a single message
+                  // let the user write another message
+
+                  input.removeAttr('disabled');
+                  addMessage(json.data.author, json.data.text,
+                             json.data.color, new Date(json.data.time),json.data.content);
+                } else {
+                  console.log('Hmm..., I\'ve never seen JSON like this:', json);
+                }
+              };
+              /**
+               * Send message when user presses Enter key
+               */
+              input.keydown(function(e) {
+                if (e.keyCode === 13) {
+                  var msg = $(this).val();
+                  if (!msg) {
+                    return;
+                  }
+                  // send the message as an ordinary text
+                  connection.send(msg);
+                  console.log("msg = "+msg);
+                  $(this).val('');
+                  // disable the input field to make the user wait until server
+                  // sends back response
+                  input.attr('disabled', 'disabled');
+                  // we know that the first message sent from a user their name
+                  if (myName === false) {
+                    myName = msg;
+                  }
+                }
+              });
+              /**
+               * This method is optional. If the server wasn't able to
+               * respond to the in 3 seconds then show some error message
+               * to notify the user that something is wrong.
+               */
+              setInterval(function() {
+                if (connection.readyState !== 1) {
+                  console.log("connection.readyState = "+connection.readyState);
+                  status.text('Error');
+                  input.attr('disabled', 'disabled').val(
+                      'Unable to communicate with the WebSocket server.');
+                }
+              }, 30000);
+              /**
+               * Add message to the chat window
+               */
+              function addMessage(author, message, color, dt,type) {
+                if(type==="text"){
+                  content.prepend('<p><span style="color:' + color + '">'
+                    + author + '</span> @ ' + (dt.getHours() < 10 ? '0'
+                    + dt.getHours() : dt.getHours()) + ':'
+                    + (dt.getMinutes() < 10
+                      ? '0' + dt.getMinutes() : dt.getMinutes())
+                    + ': ' + message + '</p>');
+                }else if(type==="image"){
+                  var image = new Image();
+                  image.src = message;
+                  content.prepend(image)
+
+                  content.prepend('<p><span style="color:' + color + '">'
+                        + author + '</span> @ ' + (dt.getHours() < 10 ? '0'
+                        + dt.getHours() : dt.getHours()) + ':'
+                        + (dt.getMinutes() < 10
+                          ? '0' + dt.getMinutes() : dt.getMinutes())
+                        + ':</p>');
+                }
+              }
+
+            });
+          </script>
+      </div>
   </body>
 </html>

@@ -17,9 +17,7 @@
   </style>
   </head>
   <body>
-     <div >     
-      <canvas id="mycanvas"></canvas>
-    </div>
+     
     <div id="content"></div>
     <div>
       <span id="status">TV</span>
@@ -39,6 +37,7 @@
         var myColor = false;
         // my name sent to the server
         var myName = false;
+        var vWidth = 5,vHeight = 5;
         // if user is running mozilla then use it's built-in WebSocket
         window.WebSocket = window.WebSocket || window.MozWebSocket;
         // if browser doesn't support WebSocket, just show
@@ -74,7 +73,7 @@
           try {
             var json = JSON.parse(message.data);
           } catch (e) {
-            console.log('Invalid JSON: ', message.data);
+            handleReceive(message);
             return;
           }
           // NOTE: if you're not sure about the JSON structure
@@ -87,11 +86,15 @@
             //input.removeAttr('disabled').focus();
             // from now user can start sending messages
           } else if (json.type === 'history') { // entire message history
-            // insert every single message to the chat window
+            console.log("json = "+JSON.stringify(json));
             for (var i=0; i < json.data.length; i++) {
-                addMessage(json.data[i].author, json.data[i].text,
-                json.data[i].color, new Date(json.data[i].time),json.data[i].content);
-            }
+                      if(json.data[i].type==='Buffer'){
+                        handleReceive(json.data[i]);
+                      }else{
+                        addMessage(json.data[i].author, json.data[i].text,
+                          json.data[i].color, new Date(json.data[i].time),json.data[i].content);
+                      }
+             }
           } else if (json.type === 'message') { // it's a single message
             // let the user write another message
             //input.removeAttr('disabled');
@@ -126,18 +129,30 @@
         });*/
 
         function handleReceive(message) {
-       
-        var c = resultCanvas = document.getElementById('mycanvas');
-        var ctx = c.getContext('2d');
-        var imageData = ctx.createImageData(200, 200);
-        var pixels = imageData.data;
-        var buffer = new Uint8Array(message.data);
-        for (var i=0; i < pixels.length; i++) {
-          pixels[i] = buffer[i];
-        }
-        console.log("pixels = "+pixels.length);
-        //ctx.putImageData(imageData, 0, 0);
-      }
+               
+                //var data = JSON.parse(message.data)
+               
+                //var bytes = new Uint8Array(message.data);
+                //console.log(JSON.stringify(message.data));
+                //var c  = document.getElementById('resultcanvas');
+                //var c  = new Canvas();
+                var c  =  document.createElement('canvas');
+                c.width = vWidth;
+                c.height = vHeight;
+                var ctx = c.getContext('2d');
+
+
+                var imageData = ctx.createImageData(c.width, c.height);
+                var pixels = imageData.data;
+                 console.log("history "+pixels.length+" w = "+vWidth+" h = "+vHeight);
+                var buffer = new Uint8Array(message.data);
+                for (var i=0; i < pixels.length; i++) {
+                  pixels[i] = buffer[i];
+                }
+                ctx.putImageData(imageData,0,0);
+                c.style.display = 'block'
+                content.prepend(c);
+              }
         /**
          * This method is optional. If the server wasn't able to
          * respond to the in 3 seconds then show some error message
@@ -154,27 +169,26 @@
          * Add message to the chat window
          */
         function addMessage(author, message, color, dt,type) {
-            if(type==="text"){
-              content.prepend('<p><span style="color:' + color + '">'
-                + author + '</span> @ ' + (dt.getHours() < 10 ? '0'
-                + dt.getHours() : dt.getHours()) + ':'
-                + (dt.getMinutes() < 10
-                  ? '0' + dt.getMinutes() : dt.getMinutes())
-                + ': ' + message + '</p>');
-            }else if(type==="image"){
-                
-              var image = new Image();
-              image.src = message;
-              content.prepend(image)
+                if(type==="text"){
+                  content.prepend('<p><span style="color:' + color + '">'
+                    + author + '</span> @ ' + (dt.getHours() < 10 ? '0'
+                    + dt.getHours() : dt.getHours()) + ':'
+                    + (dt.getMinutes() < 10
+                      ? '0' + dt.getMinutes() : dt.getMinutes())
+                    + ': ' + message + '</p>');
+                }else if(type==="image"){
+                  var image = new Image();
+                  image.src = message;
+                  content.prepend(image)
 
-              content.prepend('<p><span style="color:' + color + '">'
-                + author + '</span> @ ' + (dt.getHours() < 10 ? '0'
-                + dt.getHours() : dt.getHours()) + ':'
-                + (dt.getMinutes() < 10
-                  ? '0' + dt.getMinutes() : dt.getMinutes())
-                + ':</p>');
-            }
-        }
+                  content.prepend('<p><span style="color:' + color + '">'
+                        + author + '</span> @ ' + (dt.getHours() < 10 ? '0'
+                        + dt.getHours() : dt.getHours()) + ':'
+                        + (dt.getMinutes() < 10
+                          ? '0' + dt.getMinutes() : dt.getMinutes())
+                        + ':</p>');
+                }
+              }
       });
     </script>
   </body>

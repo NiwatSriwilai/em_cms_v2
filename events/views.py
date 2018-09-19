@@ -64,7 +64,7 @@ def chat_tv(request):
     context = {
         'someDjangoVariable': 'Hello'
     }
-    return render(request, 'events/chat-tv.html', context=context)
+    return render(request, 'events/tv.html', context=context)
     #return HttpResponseRedirect('http://localhost/chat/chat-client.html')
 #http://localhost/chat/chat-client.html
 def inh_template(request):

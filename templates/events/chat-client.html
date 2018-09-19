@@ -1,6 +1,7 @@
 {% load static %}<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/html">
   <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta charset="utf-8">
     <title>WebSockets - Simple chat</title>
     <style>
@@ -56,11 +57,11 @@
     
   }
   
-   #vid {
+   /*#vid {
     margin-left: auto;
     margin-right: auto;
     display: block
-   }
+   }*/
     #take_picture {
       background-color: #4CAF50; /* Green */
       border: none;
@@ -81,31 +82,29 @@
       display: inline-block;
       font-size: 16px;
     }
-    #contentarea {
-      font-size: 16px;
-      font-family: "Lucida Grande", "Arial", sans-serif;
-     
-    }
+    
   </style>
    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
   </head>
   <body>
   <script src="{% static 'js/bootstrap.min.js' %}"></script>
       <div class="container">  
-          <div class="contentarea">
-              <video id="vid"></video>
-              <canvas id="canvas">
-              </canvas>
-             
-              <div class="output">
-                <img id="photo" alt="The screen capture will appear in this box."> 
+          <div class="panel panel-default">
+              <div class="panel-body">
+                  <video id="vid"></video>
+                  <canvas id="canvas">
+                  </canvas>
+
+                  <div class="output">
+                    <img id="photo" alt="The screen capture will appear in this box.">
+                  </div>
               </div>
-            </div>
-            <div id="content"></div>
-            <div>
+          </div>
+          <div id="content"></div>
+          <div>
               <span id="status">Connecting...</span>
               <input type="text" id="input" disabled="disabled" />
-            </div>
+          </div>
           </br>
             <div>
               <button id="butto" class = "button">Send</button>

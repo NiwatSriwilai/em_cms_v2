@@ -31,10 +31,12 @@
     }
 
     #photo {
-     
+      display:block;
       border: 1px solid black;
       box-shadow: 2px 2px 3px black;
-     
+      margin-left: auto;
+      margin-right: auto;
+    
     }
 
     #canvas {
@@ -44,13 +46,13 @@
       display: inline-block;
     }
   .camera {
-    width: 340px;
+    
     display:none;
   }
 
   .output {
     display:block;
-    width: 320px;
+   
     
   }
   
@@ -82,19 +84,19 @@
     #contentarea {
       font-size: 16px;
       font-family: "Lucida Grande", "Arial", sans-serif;
-      width: 760px;
+     
     }
   </style>
    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
   </head>
   <body>
+  <script src="{% static 'js/bootstrap.min.js' %}"></script>
       <div class="container">  
           <div class="contentarea">
               <video id="vid"></video>
               <canvas id="canvas">
               </canvas>
-              <canvas id="resultcanvas">
-              </canvas>
+             
               <div class="output">
                 <img id="photo" alt="The screen capture will appear in this box."> 
               </div>
@@ -155,7 +157,7 @@
               var photo = null;
               var startbutton = null;
               var video = null;
-              var vWidth = 5,vHeight = 5;
+              var vWidth = 320,vHeight = 240;
               //var vWidth = 1280,vHeight = 720;
                 
               // if user is running mozilla then use it's built-in WebSocket

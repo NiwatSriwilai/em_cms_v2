@@ -5,9 +5,9 @@
     <meta charset="utf-8">
     <title>WebSockets - Simple chat</title>
     <style>
-    * { font-family:tahoma; font-size:12px; padding:0px;margin:0px;}
+    /** { font-family:tahoma; font-size:12px; padding:0px;margin:0px;}
     p { line-height:18px; }
-    div { width:500px; margin-left:auto; margin-right:auto;}
+    div { width:500px; margin-left:auto; margin-right:auto;}*/
     #content { padding:5px; background:#ddd; border-radius:5px;
         overflow-y: scroll; border:1px solid #CCC;
         margin-top:10px; height: 260px; }
@@ -31,14 +31,14 @@
       
     }
 
-    #photo {
+   /* #photo {
       display:block;
       border: 1px solid black;
       box-shadow: 2px 2px 3px black;
       margin-left: auto;
       margin-right: auto;
     
-    }
+    }*/
 
     #canvas {
       display:none;
@@ -51,11 +51,11 @@
     display:none;
   }
 
-  .output {
+  /*.output {
     display:block;
    
     
-  }
+  }*/
   
    /*#vid {
     margin-left: auto;
@@ -89,15 +89,14 @@
   <body>
   <script src="{% static 'js/bootstrap.min.js' %}"></script>
       <div class="container">  
-          <div class="panel panel-default">
-              <div class="panel-body">
-                  <video id="vid"></video>
+          <div class="media">
+              <div class="media-middle">
+                  <video id="vid" class="media-object"></video>
                   <canvas id="canvas">
                   </canvas>
-
-                  <div class="output">
-                    <img id="photo" alt="The screen capture will appear in this box.">
-                  </div>
+              </div>
+              <div class="media-right">
+                    <img id="photo" class="media-object">
               </div>
           </div>
           <div id="content"></div>

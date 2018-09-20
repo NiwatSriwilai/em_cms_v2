@@ -144,3 +144,5 @@ def register(request):
 #webrtc
 #https://medium.com/@martin.sikora/node-js-websocket-simple-chat-tutorial-2def3a841b61
 
+#bootstrap
+#https://getbootstrap.com/docs/4.0/utilities/spacing/

@@ -75,10 +75,17 @@
       text-decoration: none;
       display: inline-block;
       font-size: 16px;
-    }*/
-    .notdistplay {
-      display:none
     }
+    #save {
+      
+      border: none;
+      color: white;
+      padding: 15px 32px;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+      font-size: 16px;
+    }*/
     .yscroll {
       height:400px;
       overflow-y: scroll;
@@ -89,15 +96,15 @@
   <body>
   <script src="{% static 'js/bootstrap.min.js' %}"></script>
       <div class="container">  
-          
-             <div class="mt-2" align = "center">
-                  <video id="vid" class="notdistplay"></video>
+          <div class="media">
+              <div class="media-middle">
+                  <video id="vid" class="media-object"></video>
                   <canvas id="canvas">
                   </canvas>
-                  <img id="photo" class="notdistplay">
+                  <img id="photo" class="media-object">
               </div>              
-          
-          <div id="content" class = "bg-secondary text-white yscroll mt-2"></div>
+          </div>
+          <div id="content" class = "bg-secondary text-white yscroll"></div>
           <div>
               <form>
                 <div class="form-group">

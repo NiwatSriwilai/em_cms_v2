@@ -7,6 +7,8 @@ from django.http import HttpResponseRedirect
 import requests
 import datetime
 from django.template import loader
+#import Base
+#import models
 from . import Base
 from . import models
 def index(request):
@@ -40,6 +42,8 @@ def test_template(request):
     return render(request, 'events/test_template.html', context=context)
 def vote(request,id,p_id):
     return render(request, 'events/about.html', context=None)
+def floor(request):
+    return render(request, 'events/floorM.html', context=None)
 def bootstrap(request):
     for i in range(0,10):
         print('number = %d'%i)
@@ -55,6 +59,11 @@ def bootstrap(request):
     }
     return render(request, 'events/bootstrap.html', context=boards)
 def chat_client(request):
+    #p = models.Person(first_name = "Niwat",last_name = "Sriwilai");
+    #p.save()
+    p =  models.Person.objects.get(pk=1)
+    print("---p = "+p.last_name)
+    print("---run index");
     context = {
         'someDjangoVariable':'Hello'
     }

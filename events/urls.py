@@ -12,6 +12,7 @@ urlpatterns = [
     path('chat_client/', view = views.chat_client, name='chat_client'),
     path('chat_tv/', view = views.chat_tv, name='chat_tv'),
     path('vote/<int:id>/<int:p_id>', view = views.vote, name='vote'),
+    path('floor', view = views.floor, name='floor'),
     #path('about2/', view = views.about, name='about2'),
     #path('callback/', view = views.callback, name='callback'),
     #url('', views.HomePageView.as_view()),

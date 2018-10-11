@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -20,60 +21,183 @@
         </style>
 </head>
 <body>
-    <script src="https://cdn.babylonjs.com/babylon.js"></script>
-    <script src="https://cdn.babylonjs.com/babylon.max.js"></script>
-    <script src="https://cdn.babylonjs.com/babylon.worker.js"></script>
-<canvas id="renderCanvas"></canvas>
+         <script src="{% static 'js/three.min.js' %}"></script>
+
+		<script src="{% static 'js/libs/inflate.min.js' %}"></script>
+		<script src="{% static 'js/loaders/FBXLoader.js' %}"></script>
+		<script src="{% static 'js/loaders/TGALoader.js' %}"></script>
+		<script src="{% static 'js/controls/OrbitControls.js' %}"></script>
+
+		<script src="{% static 'js/Detector.js' %}"></script>
+		
     <script>
-        var canvas = document.getElementById("renderCanvas");
+		if ( ! Detector.webgl ) 
+		       Detector.addGetWebGLMessage();
+			console.log("-------test");
+			var container, stats, controls;
+			var camera, scene, renderer, light;
 
-        var createScene = function () {
+			var clock = new THREE.Clock();
 
-            // This creates a basic Babylon Scene object (non-mesh)
-            var scene = new BABYLON.Scene(engine);
+			var mixers = [];
+			//learning
+			var myFunc = function(msg){
+					alert(msg);
+			};
+			//myFunc("xxxxxx---");
+			var fibo = function fibonacci(msg) {
+			    // you can use "fibonacci()" here as this funciton expression has a name.
+				alert(msg);
+				//fibonacci("kkkkkkk");
+			};
+			//fibo("xxxxxxxx");
+			//end learning"
+			init();
+			animate();
+			
+			function init() {
+				
+				container = document.createElement( 'div' );
+				document.body.appendChild( container );
 
-            // This creates and positions a free camera (non-mesh)
-            var camera = new BABYLON.FreeCamera("camera1", new BABYLON.Vector3(0, 5, -10), scene);
+				camera = new THREE.PerspectiveCamera( 60, window.innerWidth / window.innerHeight, 1,2000 );
+				camera.position.set( 100, 200, 300 );
+  			    
+				
+				camera.position.z = 600;
+			    camera.position.y = 650;
+				camera.position.x = -100;
+				
+				controls = new THREE.OrbitControls( camera );
+				controls.target.set( 0, 100, 0 );
+				controls.update();
 
-            // This targets the camera to scene origin
-            camera.setTarget(BABYLON.Vector3.Zero());
+				scene = new THREE.Scene();
+				scene.background = new THREE.Color( 0xa0a0a0 );
+				//scene.fog = new THREE.Fog( 0xa0a0a0, 800, 2000 );
 
-            // This attaches the camera to the canvas
-            camera.attachControl(canvas, true);
+				light = new THREE.HemisphereLight( 0xffffff, 0x444444 );
+				light.position.set( 0, 200, 0 );
+				scene.add( light );
 
-            // This creates a light, aiming 0,1,0 - to the sky (non-mesh)
-            var light = new BABYLON.HemisphericLight("light1", new BABYLON.Vector3(0, 1, 0), scene);
+				light = new THREE.DirectionalLight( 0xffffff );
+				light.position.set( 0, 200, 100 );
+				light.castShadow = true;
+				light.shadow.camera.top = 180;
+				light.shadow.camera.bottom = -100;
+				light.shadow.camera.left = -120;
+				light.shadow.camera.right = 120;
+				scene.add( light );
 
-            // Default intensity is 1. Let's dim the light a small amount
-            light.intensity = 0.7;
+				// scene.add( new THREE.CameraHelper( light.shadow.camera ) );
 
-            // Our built-in 'sphere' shape. Params: name, subdivs, size, scene
-            var sphere = BABYLON.Mesh.CreateSphere("sphere1", 16, 2, scene);
-            
+				// ground
+				var mesh = new THREE.Mesh( new THREE.PlaneBufferGeometry( 2000, 2000 ), new THREE.MeshPhongMaterial( { color: 0x999999, depthWrite: false } ) );
+				mesh.rotation.x = - Math.PI / 2;
+				mesh.receiveShadow = true;
+				scene.add( mesh );
 
-            // Move the sphere upward 1/2 its height
-            sphere.position.y = 1;
+				var grid = new THREE.GridHelper( 2000, 20, 0x000000, 0x000000 );
+				grid.material.opacity = 0.2;
+				grid.material.transparent = true;
+				scene.add( grid );
 
-            // Our built-in 'ground' shape. Params: name, width, depth, subdivs, scene
-            var ground = BABYLON.Mesh.CreateGround("ground1", 6, 6, 2, scene);
+				// model
+				var loader = new THREE.FBXLoader();
+				
+				/*loader.load( 'models/fbx/Samba Dancing.fbx', function ( object ) {
+					object.mixer = new THREE.AnimationMixer( object );
+					mixers.push( object.mixer );
 
-            return scene;
+					var action = object.mixer.clipAction( object.animations[ 0] );
+					//alert("Hello, World! = "+object.animations.length);
+					//action.play();
+					//object.position.y = 1000;
+					console.log("---x = "+object.position.y);
+					object.traverse( function ( child ) {
 
-        };
+						if ( child.isMesh ) {
 
-        var engine = new BABYLON.Engine(canvas, true, { preserveDrawingBuffer: true, stencil: true });
-        var scene = createScene();
+							child.castShadow = true;
+							child.receiveShadow = true;
 
-        engine.runRenderLoop(function () {
-            if (scene) {
-                scene.render();
-            }
-        });
+						}
 
-        // Resize
-        window.addEventListener("resize", function () {
-            engine.resize();
-        });
+					} );
+
+					scene.add( object );
+
+				} );*/
+
+				
+				loader.load( "{% static 'images/models/fbx/emp_1F.fbx' %}", function ( object ) {
+					object.mixer = new THREE.AnimationMixer( object );
+					mixers.push( object.mixer );
+
+					var action = object.mixer.clipAction( object.animations[ 0] );
+					//alert("Hello, World! = "+object.animations.length);
+					action.play();
+
+					object.traverse( function ( child ) {
+
+						if ( child.isMesh ) {
+
+							child.castShadow = true;
+							child.receiveShadow = true;
+
+						}
+
+					} );
+
+					scene.add( object );
+
+				} );
+				
+				renderer = new THREE.WebGLRenderer( { antialias: true } );
+				renderer.setPixelRatio( window.devicePixelRatio );
+				renderer.setSize( window.innerWidth, window.innerHeight );
+				renderer.shadowMap.enabled = true;
+				container.appendChild( renderer.domElement );
+
+				window.addEventListener( 'resize', onWindowResize, false );
+
+				// stats
+				
+				//container.appendChild( stats.dom );
+
+			}
+
+			function onWindowResize() {
+
+				camera.aspect = window.innerWidth / window.innerHeight;
+				camera.updateProjectionMatrix();
+
+				renderer.setSize( window.innerWidth, window.innerHeight );
+
+			}
+
+			//
+
+			function animate() {
+
+				requestAnimationFrame( animate );
+
+				if ( mixers.length > 0 ) {
+
+					for ( var i = 0; i < mixers.length; i ++ ) {
+
+						mixers[ i ].update( clock.getDelta() );
+
+					}
+
+				}
+
+				renderer.render( scene, camera );
+
+				
+
+			}
+
     </script>
 </body>
 </html>

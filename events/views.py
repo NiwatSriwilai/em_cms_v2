@@ -62,6 +62,8 @@ def chat_client(request):
     #p = models.Person(first_name = "Niwat",last_name = "Sriwilai");
     #p.save()
     p =  models.Person.objects.get(pk=1)
+    p.last_name = "XXX"
+    p.save()
     print("---p = "+p.last_name)
     print("---run index");
     context = {
@@ -124,6 +126,7 @@ def requestCurl():
 #requestCurl()    
 #def about(request):
 #    return render(request, 'about.html', context=None)
+#
 def callback(request):
     #print(request.GET.get('name', '')+' B = '+request.GET.get('b', ''))
     #return HttpResponse(request.GET['name'])
@@ -133,7 +136,8 @@ def callback(request):
     #wb.open('https://access.line.me/oauth2/v2.1/authorize?response_type=code&client_id=1594794852&redirect_uri=http://niwat.pythonanywhere.com/polls/callback/&state=12345abcde&scope=profile')
     return render(request, 'about.html', context=None)
 def register(request):
-    return HttpResponseRedirect('https://goo.gl/forms/RHx0pQjEXAMz5Z9s1')        
+    return HttpResponseRedirect('https://goo.gl/forms/RHx0pQjEXAMz5Z9s1')
+
 #class HomePageView(TemplateView):
 #    def get(self, request, **kwargs):
 #        return render(request, 'about.html', context=None)
@@ -155,3 +159,7 @@ def register(request):
 
 #bootstrap
 #https://getbootstrap.com/docs/4.0/utilities/spacing/
+#debian command
+#dpkg-query -l
+
+#uwsgi --http :8080 --home /home/user@yipintsoi/Env/firstsite --chdir /home/sammy/firstsite -w firstsite.wsgi

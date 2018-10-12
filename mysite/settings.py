@@ -40,7 +40,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'widget_tweaks',
-
+    'localflavor',
+    'phonenumber_field',
     #'polls'
 ]
 

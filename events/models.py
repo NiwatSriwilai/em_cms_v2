@@ -7,7 +7,7 @@ from phonenumber_field.modelfields import PhoneNumberField
 #python manage.py runserver
 class Category(models.Model):
     name = models.CharField(max_length=200)
-    pub_date = models.DateTimeField('date published')
+    #pub_date = models.DateTimeField('date published')
     def __str__(self):
         return self.name
 class Shop(models.Model):

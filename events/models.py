@@ -8,6 +8,10 @@ from phonenumber_field.modelfields import PhoneNumberField
 class Category(models.Model):
     name = models.CharField(max_length=200)
     #pub_date = models.DateTimeField('date published')
+    #class Meta(object):
+    #    verbose_name = "Platform Budget Cost Data"
+    #    verbose_name_plural = verbose_name
+
     def __str__(self):
         return self.name
 class Shop(models.Model):

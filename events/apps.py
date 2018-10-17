@@ -1,5 +1,5 @@
 from django.apps import AppConfig
 
-
-class EventsConfig(AppConfig):
+class EventsAppConfig(AppConfig):
     name = 'events'
+    verbose_name = 'Em CMS'

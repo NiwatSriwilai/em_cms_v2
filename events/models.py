@@ -6,14 +6,16 @@ from phonenumber_field.modelfields import PhoneNumberField
 #python manage.py migrate
 #python manage.py runserver
 class Category(models.Model):
-    name = models.CharField(max_length=200)
-    #pub_date = models.DateTimeField('date published')
-    #class Meta(object):
-    #    verbose_name = "Platform Budget Cost Data"
-    #    verbose_name_plural = verbose_name
-
+    Cat_Name = models.CharField(max_length=20,default=None)
+    Parent_ID = models.IntegerField(max_length=4,null=True)
+    Cat_Level = models.IntegerField(max_length=4,null=True)
+    Active  = models.BooleanField(default = True)
+    Create_date = models.DateTimeField('Create Date',default=None)
+    create_by = models.CharField(max_length=50, default=None)
+    updated_date = models.DateTimeField('Update Date', default=None)
+    updated_by = models.CharField(max_length=50, default=None)
     def __str__(self):
-        return self.name
+        return self.Cat_Name
 class Shop(models.Model):
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
     shop_name = models.CharField(max_length=200)
@@ -41,5 +43,5 @@ class Shop(models.Model):
             return str(self.shop_name)
 class Pic(models.Model):
     shop_pic = models.ImageField(upload_to='images')
-
+    #shop_pic = models.ImageField(upload_to='uploads/', verbose_name='image')
 #https://github.com/NiwatSriwilai/test_dj.git

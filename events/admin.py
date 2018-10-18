@@ -18,3 +18,4 @@ admin.site.register(Shop)
 #        pic.allow_tags = True
 #        pic.short_description = 'sometext'
 #admin.site.register(Pic,PicAdmin)
+admin.site.register(Pic)

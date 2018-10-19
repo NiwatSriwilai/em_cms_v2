@@ -4,6 +4,7 @@ from django.contrib import admin
 from . models import Category
 from . models import Shop
 from . models import Pic
+
 from django.contrib.contenttypes.admin import GenericTabularInline
 #from django.utils.safestring import mark_safe
 

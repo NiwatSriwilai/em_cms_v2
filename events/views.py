@@ -1,9 +1,11 @@
 import logging
 import webbrowser as wb
+from django.urls import reverse
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.views.generic import TemplateView
 from django.http import HttpResponseRedirect
+from .shops_api import ShopSerialiser,CategorySerialiser
 import requests
 import datetime
 from django.template import loader
@@ -11,6 +13,25 @@ from django.template import loader
 #import models
 from . import Base
 from . import models
+from rest_framework import generics
+from .models import Shop,Category
+from rest_framework import viewsets
+class CategoryViewSet(viewsets.ModelViewSet):
+    queryset = Category.objects.all()
+    serializer_class = CategorySerialiser
+class ShopsViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows users to be viewed or edited.
+    """
+    queryset = Shop.objects.all().order_by('-date_joined')
+    serializer_class = ShopSerialiser
+
+class ListShopView(generics.ListAPIView):
+    """
+    Provides a get method handler.
+    """
+    queryset = Shop.objects.all()
+    serializer_class = ShopSerialiser
 def index(request):
     #https://access.line.me/oauth2/v2.1/login?returnUri=%2Foauth2%2Fv2.1%2Fauthorize%2Fconsent%3Fscope%3Dprofile%26response_type%3Dcode%26state%3D12345abcde%26redirect_uri%3Dhttp%253A%252F%252F35.197.130.54%252Fcallback.html%26client_id%3D1594794852&loginChannelId=1594794852&loginState=9pSz0AXSXEaDkgfjaZqfxo
     #wb.open_new_tab('https://access.line.me/oauth2/v2.1/authorize?response_type=code&client_id=1594794852&redirect_uri=http://35.197.130.54/callback.html')

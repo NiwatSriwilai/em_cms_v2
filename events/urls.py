@@ -1,7 +1,7 @@
 from django.urls import path
 from django.conf.urls import url
 from . import views
-
+#from .views import ListShopView
 urlpatterns = [
     path('', view = views.index, name='index'),
     path('about/', view = views.about, name='about'),
@@ -13,6 +13,7 @@ urlpatterns = [
     path('chat_tv/', view = views.chat_tv, name='chat_tv'),
     path('vote/<int:id>/<int:p_id>', view = views.vote, name='vote'),
     path('floor', view = views.floor, name='floor'),
+    #path('shops/', ListShopView.as_view(), name="shops-all")
     #path('about2/', view = views.about, name='about2'),
     #path('callback/', view = views.callback, name='callback'),
     #url('', views.HomePageView.as_view()),

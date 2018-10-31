@@ -20,30 +20,46 @@ class Category(models.Model):
     def __str__(self):
         return self.Cat_Name
 class Shop(models.Model):
-    category = models.ForeignKey(Category, on_delete=models.CASCADE)
-    shop_name = models.CharField(max_length=200)
-    shop_shortname_th = models.CharField(max_length=200,null=True)
-    shop_shortname_en = models.CharField(max_length=200,null=True)
-    shop_details_th = models.CharField(max_length=200,null=True)
-    shop_details_en = models.CharField(max_length=200,null=True)
-    shop_type = models.CharField(max_length=10,default=None)
+    SHOP_TYPE_CHOICE = (("1","1"),("2","2"))
+    BRANCH_CHOICES = (("EMP","EMP"),("EMQ","EMQ"))
+    FLOOR_CHOICES = (
+        ('EMP', (
+            ('Floo1', 'Floo1'),
+            ('M', 'M'),
+        )
+         ),
+        ('EMQ', (
+            ('G', 'G'),
+            ('Floo1', 'Floo1'),
+            ('M', 'M')
+        )
+        )
+    )
+    category = models.ForeignKey(Category,related_name='shops', on_delete=models.CASCADE,default=6)
+    Shop_ID = models.IntegerField(default=1)
+    Shop_Name = models.CharField(max_length=200)
+    Shop_ShortName_TH = models.CharField(max_length=200,null=True)
+    Shop_ShortName_EN = models.CharField(max_length=200,null=True)
+    Shop_Detail_TH = models.CharField(max_length=200,null=True)
+    Shop_Detail_EN = models.CharField(max_length=200,null=True)
+    Cat_ID = models.CharField(max_length=10,choices=SHOP_TYPE_CHOICE,default=None)
     #cat_id = models.CharField(max_length=10, default=None)
-    active = models.CharField(max_length=100, default=None)
+    Active = models.CharField(max_length=100, default=None)
     icon = models.ImageField(default=None)
     cover = models.ImageField(default=None)
-    email = models.EmailField(null=True)
-    floor = models.CharField(max_length=10, default=None)
-    tel = PhoneNumberField(default=None)
-    branch_code = models.CharField(max_length=4, default=None)
+    Email = models.EmailField(null=True)
+    Floor = models.CharField(max_length=10,choices=FLOOR_CHOICES, default=None)
+    Tel = PhoneNumberField(default=None)
+    Branch_Code = models.CharField(max_length=4,choices=BRANCH_CHOICES, default=None)
     pivot_icon = models.ImageField(null=True)
     x_pivot = models.FloatField(default=0)
     y_pivot = models.FloatField(default=0)
-    create_date = models.DateTimeField('create date',default=None)
-    create_by = models.CharField(max_length=50, default=None)
-    updated_date = models.DateTimeField('update date',default=None)
-    updated_by = models.CharField(max_length=50, default=None)
+    Create_date = models.DateTimeField('create date',default=None)
+    Create_by = models.CharField(max_length=50, default=None)
+    Updated_date = models.DateTimeField('update date',default=None)
+    Updated_by = models.CharField(max_length=50, default=None)
     def __str__(self):
-            return str(self.shop_name)
+        return self.shop_name
 class Pic(models.Model):
     shop_pic = models.ImageField(upload_to='images')
     #shop_pic = models.ImageField(upload_to='uploads/', verbose_name='image')

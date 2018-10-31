@@ -5,7 +5,7 @@ from django.http import HttpResponse
 from django.shortcuts import render
 from django.views.generic import TemplateView
 from django.http import HttpResponseRedirect
-from .shops_api import ShopSerialiser,CategorySerialiser
+from .shops_api import ShopSerialiser,CategorySerialiser,CategoryWithShopsSerialiser
 import requests
 import datetime
 from django.template import loader
@@ -16,16 +16,28 @@ from . import models
 from rest_framework import generics
 from .models import Shop,Category
 from rest_framework import viewsets
+from rest_framework import generics
+from rest_framework.routers import DefaultRouter
 class CategoryViewSet(viewsets.ModelViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerialiser
-class ShopsViewSet(viewsets.ModelViewSet):
+class CategoryWithShopsViewSet(viewsets.ModelViewSet):
+    queryset = Category.objects.all()
+    serializer_class = CategoryWithShopsSerialiser
+class ShopsViewSet(generics.RetrieveAPIView):
     """
     API endpoint that allows users to be viewed or edited.
     """
-    queryset = Shop.objects.all().order_by('-date_joined')
+    #queryset = Shop.objects.all().order_by('-date_joined')
+    queryset = Shop.objects.all()
     serializer_class = ShopSerialiser
-
+class ShopsViewSet2(viewsets.ModelViewSet):
+    """
+    API endpoint that allows users to be viewed or edited.
+    """
+    #queryset = Shop.objects.all().order_by('-date_joined')
+    queryset = Shop.objects.all()
+    serializer_class = ShopSerialiser
 class ListShopView(generics.ListAPIView):
     """
     Provides a get method handler.
@@ -158,7 +170,11 @@ def callback(request):
     return render(request, 'about.html', context=None)
 def register(request):
     return HttpResponseRedirect('https://goo.gl/forms/RHx0pQjEXAMz5Z9s1')
-
+task_detail = ShopsViewSet2.as_view({
+    'get': 'retrieve',
+})
+task_router = DefaultRouter()
+task_router.register(r'tasks', ShopsViewSet2)
 #class HomePageView(TemplateView):
 #    def get(self, request, **kwargs):
 #        return render(request, 'about.html', context=None)

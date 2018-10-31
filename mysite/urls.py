@@ -21,6 +21,9 @@ from django.conf.urls import url,include
 from django.conf import settings
 from django.conf.urls.static import static
 from rest_framework import routers
+from events.views import task_router
+from rest_framework.urlpatterns import format_suffix_patterns
+
 #from events.shops_api import ShopViewSet
 
 #from rest_framework import routers
@@ -29,17 +32,22 @@ from rest_framework import routers
 #router.register(r'notes', ShopViewSet)
 from events import views
 router = routers.DefaultRouter()
-router.register(r'shops', views.ShopsViewSet)
+router.register(r'shops', views.ShopsViewSet2)
 router.register(r'categorys', views.CategoryViewSet)
+router.register(r'cat_shops', views.CategoryWithShopsViewSet)
+#shop_detail = views.ShopsViewSet.as_view({
+#    'get': 'retrieve'
+#})
 urlpatterns = [
     url(r'^', include(router.urls)),
     path('polls/', include('polls.urls')),
     path('events/', include('events.urls')),
+    url(r'^events/', include(task_router.urls)),
     #path('polls', include('polls.urls')),
     #path(r'^', include('polls.urls')),
     path('admin/', admin.site.urls),
 
-
+    #path('snippets/', views.SnippetList.as_view()),
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     #url(r'^api/', include(router.urls)),
     #http://127.0.0.1:8000/polls/templates/index.html

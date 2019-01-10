@@ -1,22 +1,27 @@
 from django.db import models
 from phonenumber_field.modelfields import PhoneNumberField
-
+from django.contrib.auth.models import User
+from mysite import settings
+from datetime import datetime
 #from rest_framework import serializers
-
+from django_userforeignkey.models.fields import UserForeignKey
 # Create your models here.
 #db command
 #python manage.py makemigrations
 #python manage.py migrate
 #python manage.py runserver
+#a = User.objects.get(pk=2)
+#print('------data = %s'%a.username)
 class Category(models.Model):
     Cat_Name = models.CharField(max_length=20,default=None)
     Parent_ID = models.IntegerField(max_length=4,null=True)
     Cat_Level = models.IntegerField(max_length=4,null=True)
     Active  = models.BooleanField(default = True)
-    Create_date = models.DateTimeField('Create Date',default=None)
-    create_by = models.CharField(max_length=50, default=None)
-    updated_date = models.DateTimeField('Update Date', default=None)
-    updated_by = models.CharField(max_length=50, default=None)
+    Create_date = models.DateTimeField('Create Date',default=datetime.now(),null=False)
+    create_by = models.ForeignKey(User, on_delete=models.CASCADE,related_name="UserXXX")
+    updated_date = models.DateTimeField('Update Date', default=datetime.now(),null=False)
+    updated_by = models.ForeignKey(User, on_delete=models.CASCADE)
+
     def __str__(self):
         return self.Cat_Name
 class Shop(models.Model):
@@ -54,12 +59,13 @@ class Shop(models.Model):
     pivot_icon = models.ImageField(null=True)
     x_pivot = models.FloatField(default=0)
     y_pivot = models.FloatField(default=0)
-    Create_date = models.DateTimeField('create date',default=None)
-    Create_by = models.CharField(max_length=50, default=None)
-    Updated_date = models.DateTimeField('update date',default=None)
-    Updated_by = models.CharField(max_length=50, default=None)
+    Create_date = models.DateTimeField('create date',default=None,null=False)
+    Create_by = models.CharField(max_length=200,null=False)
+    Updated_date = models.DateTimeField('update date',default=None,null=False)
+    Updated_by = models.CharField(max_length=200,null=False)
+
     def __str__(self):
-        return self.shop_name
+        return self.Shop_Name
 class Pic(models.Model):
     shop_pic = models.ImageField(upload_to='images')
     #shop_pic = models.ImageField(upload_to='uploads/', verbose_name='image')

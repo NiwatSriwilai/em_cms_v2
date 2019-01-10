@@ -14,24 +14,39 @@ from django.template import loader
 from . import Base
 from . import models
 from rest_framework import generics
-from .models import Shop,Category
+from .models import Shop,Categories
 from rest_framework import viewsets
 from rest_framework import generics
+from rest_framework.views import APIView
 from rest_framework.routers import DefaultRouter
+from rest_framework.response import Response
+from django.http import Http404
 class CategoryViewSet(viewsets.ModelViewSet):
-    queryset = Category.objects.all()
+    queryset = Categories.objects.all()
     serializer_class = CategorySerialiser
 class CategoryWithShopsViewSet(viewsets.ModelViewSet):
-    queryset = Category.objects.all()
+    queryset = Categories.objects.all()
     serializer_class = CategoryWithShopsSerialiser
-class ShopsViewSet(generics.RetrieveAPIView):
+class ShopsViewSet(APIView):
     """
     API endpoint that allows users to be viewed or edited.
     """
     #queryset = Shop.objects.all().order_by('-date_joined')
-
-    queryset = Shop.objects.all()
+    #print('----------------pk = %d'%requests.get('pk'))
+    """
+    queryset = Shop.objects.get()
     serializer_class = ShopSerialiser
+    """
+
+    def get_object(self, pk):
+        try:
+            return Shop.objects.get(pk=pk)
+        except Shop.DoesNotExist:
+            raise Http404
+    def get(self, request, pk, format=None):
+        q =  self.get_object(pk)
+        serializer = ShopSerialiser(q)
+        return Response(serializer.data)
 class ShopsViewSet2(viewsets.ModelViewSet):
     """
     API endpoint that allows users to be viewed or edited.
@@ -184,6 +199,30 @@ task_detail = ShopsViewSet2.as_view({
 })
 task_router = DefaultRouter()
 task_router.register(r'tasks', ShopsViewSet2)
+class SomethingAPIView(generics.ListAPIView):
+  # whatever serializer class
+  #queryset = Shop.objects.all()
+  serializer_class = ShopSerialiser
+  def get_queryset(self):
+      q = Shop.objects.all()
+      return q
+  def list(self,request):
+    query_params = self.request.query_params
+    x = query_params.get('x',0.0)
+    x = float(x)
+    y = query_params.get('y',0.0)
+    y = float(y)
+    #x_pivot
+    print('-------------tets api return x = %f y = %f' % (x, y))
+    q = self.get_queryset()
+    q = q.filter(x_pivot = x,y_pivot=y)
+    serializer = ShopSerialiser(q,many=True)
+    return Response(serializer.data)
+
+
+
+def testUrl(request,year,month,day):
+    return HttpResponse("Here's the text of the Web page.")
 #class HomePageView(TemplateView):
 #    def get(self, request, **kwargs):
 #        return render(request, 'about.html', context=None)

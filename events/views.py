@@ -5,7 +5,6 @@ from django.http import HttpResponse
 from django.shortcuts import render
 from django.views.generic import TemplateView
 from django.http import HttpResponseRedirect
-from .shops_api import ShopSerialiser,CategorySerialiser,CategoryWithShopsSerialiser
 import requests
 from datetime import datetime
 from django.template import loader
@@ -14,37 +13,10 @@ from django.template import loader
 from . import Base
 from . import models
 from rest_framework import generics
-from .models import Shop,Category
 from rest_framework import viewsets
 from rest_framework import generics
 from rest_framework.routers import DefaultRouter
-class CategoryViewSet(viewsets.ModelViewSet):
-    queryset = Category.objects.all()
-    serializer_class = CategorySerialiser
-class CategoryWithShopsViewSet(viewsets.ModelViewSet):
-    queryset = Category.objects.all()
-    serializer_class = CategoryWithShopsSerialiser
-class ShopsViewSet(generics.RetrieveAPIView):
-    """
-    API endpoint that allows users to be viewed or edited.
-    """
-    #queryset = Shop.objects.all().order_by('-date_joined')
 
-    queryset = Shop.objects.all()
-    serializer_class = ShopSerialiser
-class ShopsViewSet2(viewsets.ModelViewSet):
-    """
-    API endpoint that allows users to be viewed or edited.
-    """
-    #queryset = Shop.objects.all().order_by('-date_joined')
-    queryset = Shop.objects.all()
-    serializer_class = ShopSerialiser
-class ListShopView(generics.ListAPIView):
-    """
-    Provides a get method handler.
-    """
-    queryset = Shop.objects.all()
-    serializer_class = ShopSerialiser
 def index(request):
     #https://access.line.me/oauth2/v2.1/login?returnUri=%2Foauth2%2Fv2.1%2Fauthorize%2Fconsent%3Fscope%3Dprofile%26response_type%3Dcode%26state%3D12345abcde%26redirect_uri%3Dhttp%253A%252F%252F35.197.130.54%252Fcallback.html%26client_id%3D1594794852&loginChannelId=1594794852&loginState=9pSz0AXSXEaDkgfjaZqfxo
     #wb.open_new_tab('https://access.line.me/oauth2/v2.1/authorize?response_type=code&client_id=1594794852&redirect_uri=http://35.197.130.54/callback.html')
@@ -176,36 +148,3 @@ def callback(request):
     return render(request, 'about.html', context=None)
 def register(request):
     return HttpResponseRedirect('https://goo.gl/forms/RHx0pQjEXAMz5Z9s1')
-task_detail = ShopsViewSet2.as_view({
-    'get': 'retrieve',
-    'put': 'update',
-    'patch': 'partial_update',
-    'delete': 'destroy'
-})
-task_router = DefaultRouter()
-task_router.register(r'tasks', ShopsViewSet2)
-#class HomePageView(TemplateView):
-#    def get(self, request, **kwargs):
-#        return render(request, 'about.html', context=None)
-#class AboutPageView(TemplateView):
-#    template_name = "about.html"
-
-#https://www.quora.com/How-do-I-add-my-Django-projects-on-GitHub#
-#https://scotch.io/tutorials/working-with-django-templates-static-files
-#/.virtualenvs/niwat.pythonanywhere.com
-
-#start server
-#python manage.py runserver
-
-#install new module to pythonanywhere solution
-#https://stackoverflow.com/questions/29716462/pythonanywhere-django-import-error-for-requests-despite-it-being-listed
-
-#webrtc
-#https://medium.com/@martin.sikora/node-js-websocket-simple-chat-tutorial-2def3a841b61
-
-#bootstrap
-#https://getbootstrap.com/docs/4.0/utilities/spacing/
-#debian command
-#dpkg-query -l
-
-#uwsgi --http :8080 --home /home/user@yipintsoi/Env/firstsite --chdir /home/sammy/firstsite -w firstsite.wsgi

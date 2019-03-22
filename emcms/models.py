@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 from mysite import settings
 from datetime import datetime
 #from rest_framework import serializers
-from django_userforeignkey.models.fields import UserForeignKey
+#from django_userforeignkey.models.fields import UserForeignKey
 # Create your models here.
 #db command
 #python manage.py makemigrations
@@ -13,7 +13,7 @@ from django_userforeignkey.models.fields import UserForeignKey
 #a = User.objects.get(pk=2)
 #print('------data = %s'%a.username)
 class Categories(models.Model):
-    Cat_Name = models.CharField(max_length=20,default=None,verbose_name="ชื่อแคท",help_text='This field is required.')
+    Cat_Name = models.CharField(max_length=20,default=None,help_text='This field is required.')
     Parent_ID = models.IntegerField(null=True)
     Cat_Level = models.IntegerField(null=True)
     Active  = models.BooleanField(default = True,help_text='This field is required.')
@@ -22,28 +22,10 @@ class Categories(models.Model):
     updated_date = models.DateTimeField('Update Date', default=datetime.now(),null=False,help_text='This field is required.')
     updated_by = models.ForeignKey(User, on_delete=models.CASCADE,help_text='This field is required.')
 
-    Test = models.CharField(max_length=20, default=None)
-    FLOOR_CHOICES = (
-        ('EMP', (
-            ('Floo1', 'Floo1'),
-            ('M', 'M'),
-        )
-         ),
-        ('EMQ', (
-            ('G', 'G'),
-            ('Floo1', 'Floo1'),
-            ('M', 'M')
-        )
-         )
-    )
-    Floor = models.CharField(max_length=10, choices=FLOOR_CHOICES, default=None, help_text='This field is required.')
+
     def save(self, *args, **kwargs):
         print("------------------Category save %s")
-        if(self.FLOOR_CHOICES=='EMQ'):
-            print("---EMQ")
-        if (self.FLOOR_CHOICES == 'EMP'):
-            print("---EMP")
-        super(Category, self).save(*args, **kwargs)  # Call the "real" save()
+        super(Categories, self).save(*args, **kwargs)  # Call the "real" save()
     def __str__(self):
         return self.Cat_Name
 class Shop(models.Model):
@@ -62,7 +44,7 @@ class Shop(models.Model):
         )
         )
     )
-    category = models.ForeignKey(Categories,related_name='shops', on_delete=models.CASCADE,default=6)
+    categories = models.ForeignKey(Categories,related_name='shops', on_delete=models.CASCADE,default=6)
     Shop_ID = models.IntegerField(null=True)
     Shop_Name = models.CharField(null=True,max_length=200)
     Shop_ShortName_TH = models.CharField(max_length=200,null=True)
@@ -114,7 +96,5 @@ class Shop(models.Model):
         ud.Shop_ID = ud.pk
         Shop.objects.filter(id=self.id).update(Shop_ID=ud.id)
         #https://www.reddit.com/r/django/comments/3i31ka/how_do_i_get_an_auto_filled_and_auto_incrementing/
-class Pic(models.Model):
-    shop_pic = models.ImageField(upload_to='images')
     #shop_pic = models.ImageField(upload_to='uploads/', verbose_name='image')
 #https://github.com/NiwatSriwilai/test_dj.git

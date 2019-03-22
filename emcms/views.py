@@ -5,7 +5,7 @@ from django.http import HttpResponse
 from django.shortcuts import render
 from django.views.generic import TemplateView
 from django.http import HttpResponseRedirect
-from .shops_api import ShopSerialiser,CategorySerialiser,CategoryWithShopsSerialiser
+from .shops_api import ShopSerialiser,CategoriesSerialiser,CategoriesWithShopsSerialiser
 import requests
 from datetime import datetime
 from django.template import loader
@@ -21,12 +21,15 @@ from rest_framework.views import APIView
 from rest_framework.routers import DefaultRouter
 from rest_framework.response import Response
 from django.http import Http404
-class CategoryViewSet(viewsets.ModelViewSet):
+class CategoriesViewSet(viewsets.ModelViewSet):
     queryset = Categories.objects.all()
-    serializer_class = CategorySerialiser
-class CategoryWithShopsViewSet(viewsets.ModelViewSet):
+    serializer_class = CategoriesSerialiser
+class CategoriesViewSet2(viewsets.ModelViewSet):
     queryset = Categories.objects.all()
-    serializer_class = CategoryWithShopsSerialiser
+    serializer_class = CategoriesSerialiser
+class CategoriesWithShopsViewSet(viewsets.ModelViewSet):
+    queryset = Categories.objects.all()
+    serializer_class = CategoriesWithShopsSerialiser
 class ShopsViewSet(APIView):
     """
     API endpoint that allows users to be viewed or edited.
@@ -248,3 +251,4 @@ def testUrl(request,year,month,day):
 #dpkg-query -l
 
 #uwsgi --http :8080 --home /home/user@yipintsoi/Env/firstsite --chdir /home/sammy/firstsite -w firstsite.wsgi
+

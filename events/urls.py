@@ -14,8 +14,7 @@ urlpatterns = [
     path('chat_tv/', view = views.chat_tv, name='chat_tv'),
     path('vote/<int:id>/<int:p_id>', view = views.vote, name='vote'),
     path('floor', view = views.floor, name='floor'),
-    path('shops/<int:pk>/', views.ShopsViewSet.as_view()),
-    url(r'^shops2/(?P<pk>[0-9]+)$', views.task_detail, name='task_detail'),
+
     #path('shops/', ListShopView.as_view(), name="shops-all")
     #path('about2/', view = views.about, name='about2'),
     #path('callback/', view = views.callback, name='callback'),

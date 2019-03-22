@@ -3,7 +3,6 @@ from django.contrib import admin
 # Register your models here.
 from . models import Categories
 from . models import Shop
-from . models import Pic
 from datetime import datetime
 from django.utils.html import format_html
 from django.contrib.contenttypes.admin import GenericTabularInline
@@ -19,23 +18,14 @@ class CategoriesAdmin(admin.ModelAdmin):
     test_obj.short_description = "Test"
     exclude = ('create_by','updated_by','Create_date','updated_date')
     search_fields = ['Cat_Name']
-    fields = ('Cat_Name','Parent_ID','Cat_Level','Active','Test','Floor','test_obj')
-    readonly_fields = ('test_obj',)
-
-    def change_view(self, request, object_id, form_url='', extra_context=None):
-        print('------------call change_view')
-        return self.changeform_view(request, object_id, form_url, extra_context)
-    def formfield_for_choice_field(self, db_field, request, **kwargs):
-        print('------------call formfield_for_choice_field')
-        return super().formfield_for_choice_field(db_field, request, **kwargs)
     def save_model(self, request, obj, form, change):
         if(not obj.create_by_id):
             obj.create_by = request.user
             obj.Create_date = datetime.now()
         obj.updated_by = request.user
         obj.updated_date = datetime.now()
-        print('--------save = %d %s %s' % (obj.Create_date.day, request.user,obj.Floor))
-        print("------------------Admin Category save")
+        #print('--------save = %d %s %s' % (obj.Create_date.day, request.user,obj.Floor))
+        #print("------------------Admin Category save")
         super().save_model(request, obj, form, change)
 
 admin.site.register(Categories,CategoriesAdmin)
@@ -52,9 +42,11 @@ class ShopAdmin(admin.ModelAdmin):
     def get_thai_name(self,obj):
         return  obj.Shop_ShortName_TH
 
-    #get_thai_name.short_description = "ชื่อไทย"
+    #raw_id_fields = ("categories",)
+    #autocomplete_fields = ['categories']
+    get_thai_name.short_description = "SHOP SHORTNAME TH"
     list_display = ('get_thai_name','Shop_ShortName_EN', 'Shop_Detail_TH','Shop_Detail_EN', 'icon_image','cover_image','Email','Floor','Tel','Branch_Code','pivot_icon','x_pivot','y_pivot','Create_date','Create_by','Updated_date','Updated_by')
-    search_fields = ['Shop_Name','category__Cat_Name']
+    search_fields = ['Shop_Name','Shop_ShortName_TH','Shop_ShortName_EN','Branch_Code','Floor','categories__Cat_Name']
 
     exclude = ('Create_by','Updated_by','Updated_date','Create_date','Shop_ID')
     def save_model(self, request, obj, form, change):
@@ -84,3 +76,6 @@ admin.site.register(Shop,ShopAdmin)
 #https://stackoverflow.com/questions/1197674/actions-triggered-by-field-change-in-django
 #https://code.i-harness.com/en/q/14ad8e
 #https://www.netlandish.com/blog/2013/12/14/easily-track-data-changes-in-your-django-models/
+
+#input fillter
+#https://medium.com/@hakibenita/how-to-add-a-text-filter-to-django-admin-5d1db93772d8

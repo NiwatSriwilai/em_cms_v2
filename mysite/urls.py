@@ -32,13 +32,17 @@ from rest_framework.urlpatterns import format_suffix_patterns
 #router.register(r'notes', ShopViewSet)
 from emcms import views
 router = routers.DefaultRouter()
-router.register(r'shops', views.ShopsViewSet2)
-router.register(r'categorys', views.CategoryViewSet)
-router.register(r'cat_shops', views.CategoryWithShopsViewSet)
+router.register(r'em_cms/shops', views.ShopsViewSet2)
+#router.register(r'em_cms/shops/(?P<pk>[^/.]+)/$', views.ShopsViewSet2)
+#router.register(r'em_cms/categories', views.CategoriesViewSet)
+router.register(r'categorys', views.CategoriesViewSet)
+router.register(r'cat_shops', views.CategoriesWithShopsViewSet)
 #shop_detail = views.ShopsViewSet.as_view({
 #    'get': 'retrieve'
 #})
 urlpatterns = [
+    #url(r'^em_cms/shops/{pk}/$', views.ShopsViewSet2.as_view()),
+    url(r'em_cms/categories/(?P<pk>[\d]+)/$', views.CategoriesViewSet2.as_view({"get": "retrieve"}), name='categories'),
     url(r'^', include(router.urls)),
     path('polls/', include('polls.urls')),
     #path('events/', include('events.urls')),
@@ -47,7 +51,8 @@ urlpatterns = [
     #path(r'^', include('polls.urls')),
     path('admin/', admin.site.urls),
     path('emcms/', include('emcms.urls')),
-    url(r'^emcms/', include(task_router.urls)),
+    path('events/', include('events.urls')),
+    url(r'^em_cms/', include(task_router.urls)),
     #path('snippets/', views.SnippetList.as_view()),
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
 

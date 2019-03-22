@@ -67,11 +67,7 @@ def bootstrap(request):
 def chat_client(request):
     #p = models.Person(first_name = "Niwat",last_name = "Sriwilai");
     #p.save()
-    p =  models.Person.objects.get(pk=1)
-    p.last_name = "XXX"
-    p.save()
-    print("---p = "+p.last_name)
-    print("---run index");
+
     context = {
         'someDjangoVariable':'Hello'
     }

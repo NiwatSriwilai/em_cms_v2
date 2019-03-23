@@ -32,11 +32,10 @@ from rest_framework.urlpatterns import format_suffix_patterns
 #router.register(r'notes', ShopViewSet)
 from emcms import views
 router = routers.DefaultRouter()
-router.register(r'em_cms/shops', views.ShopsViewSet2)
-#router.register(r'em_cms/shops/(?P<pk>[^/.]+)/$', views.ShopsViewSet2)
-#router.register(r'em_cms/categories', views.CategoriesViewSet)
-router.register(r'categorys', views.CategoriesViewSet)
-router.register(r'cat_shops', views.CategoriesWithShopsViewSet)
+router.register(r'emcms/api/v1/shops', views.ShopsViewSet2)
+router.register(r'emcms/api/v1/categories', views.CategoriesViewSet)
+router.register(r'emcms/api/v1/cat_shops', views.CategoriesWithShopsViewSet)
+
 #shop_detail = views.ShopsViewSet.as_view({
 #    'get': 'retrieve'
 #})

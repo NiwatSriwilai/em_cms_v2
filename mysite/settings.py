@@ -88,7 +88,7 @@ DATABASES = {
         #ENGINE': 'django.db.backends.sqlite3',
         #NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'events_db',
+        'NAME': 'em_cms_v2',
         'USER': 'root',
         'PASSWORD': 'sriw0309',
 

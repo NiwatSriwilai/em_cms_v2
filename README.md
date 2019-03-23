@@ -12,9 +12,10 @@ __Second app is events app.__<br/>
   &nbsp;  __*-Create database using mysql named em_cms_v2*__.<br/>
   &nbsp;    -Type command *-u root -p* password *emcms*.<br/>
   &nbsp;    -Type command *CREATE DATABASE em_cms_v2;*.<br/>
-  &nbsp;    -Create database user username and password named *'em_cms_v2'*  type command *GRANT ALL PRIVILEGES ON *.* TO 'em_cms_v2'@'localhost' IDENTIFIED BY 'em_cms_v2'*;<br/><br/>
-  
+  &nbsp;    -Create database user username and password named *'em_cms_v2'*  type command *GRANT ALL PRIVILEGES ON *.* TO 'em_cms_v2'@'localhost' IDENTIFIED BY 'em_cms_v2'*;<br/>
+  &nbsp;    -Type *quit* command enter exit from mysql.<br/><br/>
   &nbsp;  __*-Clone em_cms_v2 from github.*__<br/>
+  &nbsp;    -Type command *git clone https://github.com/NiwatSriwilai/em_cms_v2.git* for clone em_cms_v2 project to debian.<br/>
   
   
 

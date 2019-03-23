@@ -1,6 +1,6 @@
 
 __em_cms_v2 is new version of have two app in workspace dev by Djungo framwork Python langauge tool Jetbrains Pycharm__. <br/>
-_(Location on debian now is /home/user/em_cms)_<br/><br/>
+
 __First app em_cms_v2__<br/>
   &nbsp;  em_cms_v2 is new version of em cms.<br/>
 __Second app is events app.__<br/>

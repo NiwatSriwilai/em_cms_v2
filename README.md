@@ -8,7 +8,7 @@ __Second app is events app.__<br/>
   ![alt text](https://user-images.githubusercontent.com/31529139/54862642-56d53500-4d70-11e9-9cce-2daa09bd6c76.png)<br/>
   *all app not deploy on debian server yet*<br/><br/>
   
-  __How to deploy on debian server__
+  __How to deploy on debian server.__<br/>
   &nbsp;  __*-Create database using mysql named em_cms_v2*__.<br/>
   &nbsp;    *user@yipintsoi:~$ mysql -u root -p* password *emcms*.<br/>
   &nbsp;    Type command *CREATE DATABASE em_cms_v2;*.<br/>
